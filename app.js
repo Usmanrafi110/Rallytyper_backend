@@ -46,36 +46,69 @@ app.use(cookieParser());
 app.get("/", (req, res) => {
   const apiVersion = "v1";
 
+  // const methods = [
+  //   {
+  //     path: `${apipath}/insertblogpost`,
+  //     method: "POST",
+  //     description: "Insert new blog post",
+  //   },
+  //   {
+  //     path: `${apipath}/fetch-blog-posts`,
+  //     method: "GET",
+  //     description: "Fetch all blog posts",
+  //   },
+  //   {
+  //     path: `${apipath}/update-blog-post/:id`,
+  //     method: "PUT",
+  //     description: "Update a blog post by ID",
+  //   },
+  //   {
+  //     path: `${apipath}/fetch-blog-post/:id`,
+  //     method: "GET",
+  //     description: "Fetch a single blog post by ID",
+  //   },
+  //   {
+  //     path: `${apipath}/fetch-blog-post-by-slug/:slug`,
+  //     method: "GET",
+  //     description: "Fetch a single blog post by slug",
+  //   },
+  //   {
+  //     path: `${apipath}/delete-blog-post/:id`,
+  //     method: "delete",
+  //     description: "Delete a single blog post by ID",
+  //   },
+  // ];
+
   const methods = [
     {
-      path: `${apipath}/insertblogpost`,
+      path: `${apipath}/coffee`,
+      method: "GET",
+      description:
+        "Returns 418 - I'm a teapot (because this API runs on coffee, not tea)",
+    },
+    {
+      path: `${apipath}/why-am-i-here`,
+      method: "GET",
+      description:
+        "Existential crisis endpoint - returns deep philosophical questions about API existence",
+    },
+    {
+      path: `${apipath}/magic-8-ball`,
       method: "POST",
-      description: "Insert new blog post",
+      description:
+        "Ask the API a yes/no question and get a mystical response (accuracy not guaranteed)",
     },
     {
-      path: `${apipath}/fetch-blog-posts`,
+      path: `${apipath}/dad-joke`,
       method: "GET",
-      description: "Fetch all blog posts",
+      description:
+        "Returns a programming dad joke so bad it's good (warning: may cause eye rolling)",
     },
     {
-      path: `${apipath}/update-blog-post/:id`,
-      method: "PUT",
-      description: "Update a blog post by ID",
-    },
-    {
-      path: `${apipath}/fetch-blog-post/:id`,
-      method: "GET",
-      description: "Fetch a single blog post by ID",
-    },
-    {
-      path: `${apipath}/fetch-blog-post-by-slug/:slug`,
-      method: "GET",
-      description: "Fetch a single blog post by slug",
-    },
-    {
-      path: `${apipath}/delete-blog-post/:id`,
-      method: "delete",
-      description: "Delete a single blog post by ID",
+      path: `${apipath}/rubber-duck`,
+      method: "POST",
+      description:
+        "Rubber duck debugging service - explain your problem and get a quack back",
     },
   ];
   res.json({ apiVersion, methods });
@@ -109,6 +142,41 @@ const fileFilter = (req, file, cb) => {
 
 // Initialize multer upload
 const uploadMulter = multer({ storage: storage, fileFilter: fileFilter });
+
+// Login endpoint
+app.post(`${apipath}/login`, async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required",
+      });
+    }
+
+    if (email === process.env.email && password === process.env.password) {
+      res.status(200).json({
+        message: "Login successful",
+        success: true,
+        user: {
+          email: email,
+          role: "admin",
+        },
+      });
+    } else {
+      res.status(401).json({
+        message: "Invalid email or password",
+        success: false,
+      });
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
+  }
+});
 
 // Insert New Blog Post API => `${apipath}/fetch-blog-posts`
 app.post(
