@@ -17,6 +17,13 @@ const allowedOrigins = [
   "https://rallytyper.com",
   "https://www.rallytyper.com",
 ];
+if (require.main === module) {
+  // local dev only
+  app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+  });
+}
+module.exports = app;
 
 const corsOptions = {
   origin: function (origin, callback) {
