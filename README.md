@@ -1,3 +1,3 @@
 # rallytyper_backend
 
-# node
+# nodejs
